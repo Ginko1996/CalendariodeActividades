@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Calendario de actividades — Julio 2026</title>
+<title>Calendario de actividades</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#2F6F62">
 <link rel="icon" href="icon-192.png">
@@ -24,6 +24,7 @@
     --teal: #2F6F62;
     --teal-dark: #1F4E44;
     --clay: #C9702E;
+    --red: #B33A3A;
     --line: #D9D0BC;
     --check-bg: #E4EFE9;
     --card: #FFFFFF;
@@ -34,10 +35,39 @@
     background:var(--paper);
     color:var(--ink);
     font-family:'Inter', sans-serif;
-    padding:28px 18px 60px;
+    padding:20px 16px 60px;
   }
   .wrap{ max-width:880px; margin:0 auto; }
+  button{ font-family:inherit; }
 
+  /* ---------- Top app tabs ---------- */
+  .app-tabs{
+    display:flex;
+    gap:8px;
+    margin-bottom:18px;
+  }
+  .app-tab{
+    flex:1;
+    text-align:center;
+    padding:12px;
+    border:1.5px solid var(--ink);
+    background:var(--card);
+    border-radius:10px;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    color:var(--ink-soft);
+  }
+  .app-tab.active{
+    background:var(--ink);
+    color:var(--paper);
+    border-color:var(--ink);
+  }
+
+  .view{ display:none; }
+  .view.active{ display:block; }
+
+  /* ---------- Header ---------- */
   header{
     display:flex;
     justify-content:space-between;
@@ -45,13 +75,13 @@
     gap:20px;
     flex-wrap:wrap;
     border-bottom:2px solid var(--ink);
-    padding-bottom:18px;
-    margin-bottom:22px;
+    padding-bottom:16px;
+    margin-bottom:18px;
   }
   .eyebrow{
     font-family:'IBM Plex Mono', monospace;
     font-size:12px;
-    letter-spacing:0.14em;
+    letter-spacing:0.12em;
     text-transform:uppercase;
     color:var(--teal-dark);
     margin:0 0 6px;
@@ -59,27 +89,19 @@
   h1{
     font-family:'Fraunces', serif;
     font-weight:600;
-    font-size:clamp(26px, 4vw, 38px);
+    font-size:clamp(24px, 4vw, 34px);
     margin:0;
     line-height:1.05;
   }
-  .totals{
-    text-align:right;
-    font-family:'IBM Plex Mono', monospace;
-  }
+  .totals{ text-align:right; font-family:'IBM Plex Mono', monospace; }
   .totals .big{
     font-family:'Fraunces', serif;
-    font-size:34px;
+    font-size:30px;
     font-weight:700;
     color:var(--teal-dark);
     line-height:1;
   }
-  .totals .label{
-    font-size:11px;
-    color:var(--ink-soft);
-    text-transform:uppercase;
-    letter-spacing:0.08em;
-  }
+  .totals .label{ font-size:11px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.07em; }
 
   .overall-bar{
     height:8px;
@@ -87,7 +109,7 @@
     border:1px solid var(--line);
     border-radius:20px;
     overflow:hidden;
-    margin-bottom:26px;
+    margin-bottom:22px;
   }
   .overall-bar-fill{
     height:100%;
@@ -96,299 +118,495 @@
     transition:width .4s ease;
   }
 
-  .controls{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    flex-wrap:wrap;
-    margin-bottom:18px;
-  }
-  .week-select-wrap{
-    position:relative;
-    display:flex;
-    align-items:center;
-    background:var(--card);
-    border:1.5px solid var(--ink);
-    border-radius:10px;
-    padding:0 14px;
-  }
-  .week-select-wrap::after{
-    content:"▾";
-    color:var(--teal-dark);
-    font-size:13px;
-    pointer-events:none;
-    margin-left:8px;
-  }
-  select#weekSelect{
-    appearance:none;
-    -webkit-appearance:none;
-    border:none;
-    background:transparent;
-    font-family:'IBM Plex Mono', monospace;
-    font-size:14px;
-    font-weight:600;
-    color:var(--ink);
-    padding:12px 4px;
-    cursor:pointer;
-    outline:none;
-  }
-  .week-nav{
-    display:flex;
-    gap:6px;
-  }
-  .week-nav button{
-    width:34px; height:34px;
-    border:1.5px solid var(--ink);
-    background:var(--card);
-    border-radius:8px;
-    font-size:15px;
-    cursor:pointer;
-    color:var(--ink);
-    transition:background .15s;
-  }
-  .week-nav button:hover{ background:var(--paper-dim); }
-  .week-nav button:disabled{ opacity:.35; cursor:default; }
-
-  .week-progress{
-    margin-left:auto;
-    font-family:'IBM Plex Mono', monospace;
-    font-size:13px;
-    color:var(--ink-soft);
-  }
-  .week-progress b{ color:var(--teal-dark); }
-
-  .card{
-    background:var(--card);
-    border:1.5px solid var(--ink);
-    border-radius:14px;
-    overflow:hidden;
-  }
-  table{
-    width:100%;
-    border-collapse:collapse;
-  }
-  thead th{
-    background:var(--ink);
-    color:var(--paper);
-    font-family:'IBM Plex Mono', monospace;
-    font-weight:500;
-    font-size:11px;
-    text-align:center;
-    padding:10px 6px;
-    letter-spacing:0.02em;
-  }
-  thead th.act-head{
-    cursor:default;
-  }
-  thead th .act-icon{ font-size:16px; display:block; margin-bottom:2px; }
-  thead th.day-head{
-    text-align:left;
-    padding-left:16px;
-    width:150px;
-  }
-  tbody td{
-    border-top:1px solid var(--line);
-    padding:10px 6px;
-    text-align:center;
-  }
-  tbody tr:nth-child(even){ background:#FBF9F4; }
-  .day-cell{
-    text-align:left !important;
-    padding-left:16px !important;
-    cursor:pointer;
-  }
-  .day-name{
-    font-weight:600;
-    font-size:14px;
-  }
-  .day-date{
-    font-family:'IBM Plex Mono', monospace;
-    font-size:11px;
-    color:var(--ink-soft);
-  }
-  .day-cell:hover .day-name{ color:var(--teal-dark); text-decoration:underline; }
-
-  .chk{
-    width:26px; height:26px;
-    margin:0 auto;
-    border:1.6px solid var(--ink);
-    border-radius:6px;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:var(--card);
-    transition:background .15s, border-color .15s, transform .1s;
-    user-select:none;
-    font-size:15px;
-  }
-  .chk:hover{ transform:scale(1.06); }
-  .chk.checked{
-    background:var(--check-bg);
-    border-color:var(--teal);
-    color:var(--teal-dark);
-  }
-
-  .legend{
-    margin-top:16px;
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px 18px;
-    font-size:12px;
-    color:var(--ink-soft);
-  }
-  .legend span{ display:flex; align-items:center; gap:6px; }
-  .legend .dot{
-    width:12px; height:12px;
-    border-radius:3px;
-    border:1.4px solid var(--ink);
-    background:var(--check-bg);
-    border-color:var(--teal);
-  }
-
-  .filesync{
-    margin-top:18px;
-    padding:14px 16px;
-    background:var(--card);
-    border:1.5px solid var(--ink);
-    border-radius:12px;
+  /* ---------- Calendar switcher ---------- */
+  .cal-switch{
     display:flex;
     align-items:center;
     gap:10px;
     flex-wrap:wrap;
-    font-family:'IBM Plex Mono', monospace;
-    font-size:12px;
+    margin-bottom:16px;
   }
-  .filesync .fs-title{
-    font-weight:600;
-    color:var(--ink);
-    margin-right:4px;
-    flex-basis:100%;
-    font-family:'Inter', sans-serif;
-    font-size:13px;
-  }
-  .filesync button{
-    border:1.4px solid var(--ink);
-    background:var(--paper);
-    border-radius:8px;
-    padding:8px 12px;
-    font-family:'IBM Plex Mono', monospace;
-    font-size:12px;
+  .cal-switch-btn{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--card);
+    border:1.5px solid var(--ink);
+    border-radius:10px;
+    padding:10px 14px;
     cursor:pointer;
-    color:var(--ink);
-    transition:background .15s;
+    font-weight:600;
+    font-size:14px;
+  }
+  .cal-switch-btn .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    font-weight:400;
+  }
+  .icon-btn{
+    width:38px; height:38px;
+    border:1.5px solid var(--ink);
+    background:var(--card);
+    border-radius:9px;
+    cursor:pointer;
+    font-size:15px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .icon-btn:hover{ background:var(--paper-dim); }
+
+  /* ---------- Week controls ---------- */
+  .controls{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:18px; }
+  .week-select-wrap{
+    position:relative; display:flex; align-items:center;
+    background:var(--card); border:1.5px solid var(--ink); border-radius:10px; padding:0 14px;
+  }
+  .week-select-wrap::after{ content:"▾"; color:var(--teal-dark); font-size:13px; margin-left:8px; pointer-events:none; }
+  select#weekSelect{
+    appearance:none; -webkit-appearance:none; border:none; background:transparent;
+    font-family:'IBM Plex Mono', monospace; font-size:14px; font-weight:600; color:var(--ink);
+    padding:12px 4px; cursor:pointer; outline:none;
+  }
+  .week-nav{ display:flex; gap:6px; }
+  .week-nav button{
+    width:34px; height:34px; border:1.5px solid var(--ink); background:var(--card);
+    border-radius:8px; font-size:15px; cursor:pointer; color:var(--ink);
+  }
+  .week-nav button:hover{ background:var(--paper-dim); }
+  .week-nav button:disabled{ opacity:.35; cursor:default; }
+  .week-progress{ margin-left:auto; font-family:'IBM Plex Mono', monospace; font-size:13px; color:var(--ink-soft); }
+  .week-progress b{ color:var(--teal-dark); }
+
+  /* ---------- Table ---------- */
+  .card{ background:var(--card); border:1.5px solid var(--ink); border-radius:14px; overflow:hidden; }
+  table{ width:100%; border-collapse:collapse; }
+  thead th{
+    background:var(--ink); color:var(--paper); font-family:'IBM Plex Mono', monospace;
+    font-weight:500; font-size:11px; text-align:center; padding:10px 6px;
+  }
+  thead th .act-icon{ font-size:16px; display:block; margin-bottom:2px; }
+  thead th.day-head{ text-align:left; padding-left:16px; width:140px; }
+  tbody td{ border-top:1px solid var(--line); padding:10px 6px; text-align:center; }
+  tbody tr:nth-child(even){ background:#FBF9F4; }
+  .day-cell{ text-align:left !important; padding-left:16px !important; cursor:pointer; }
+  .day-name{ font-weight:600; font-size:14px; }
+  .day-date{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--ink-soft); }
+  .day-cell:hover .day-name{ color:var(--teal-dark); text-decoration:underline; }
+  .chk{
+    width:26px; height:26px; margin:0 auto; border:1.6px solid var(--ink); border-radius:6px;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; background:var(--card);
+    transition:background .15s, border-color .15s, transform .1s; font-size:15px;
+  }
+  .chk:hover{ transform:scale(1.06); }
+  .chk.checked{ background:var(--check-bg); border-color:var(--teal); color:var(--teal-dark); }
+
+  .legend{ margin-top:14px; font-size:12px; color:var(--ink-soft); }
+
+  .filesync{
+    margin-top:16px; padding:14px 16px; background:var(--card); border:1.5px solid var(--ink);
+    border-radius:12px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    font-family:'IBM Plex Mono', monospace; font-size:12px;
+  }
+  .filesync .fs-title{ font-weight:600; color:var(--ink); margin-right:4px; flex-basis:100%; font-family:'Inter', sans-serif; font-size:13px; }
+  .filesync button{
+    border:1.4px solid var(--ink); background:var(--paper); border-radius:8px; padding:8px 12px;
+    font-family:'IBM Plex Mono', monospace; font-size:12px; cursor:pointer; color:var(--ink);
   }
   .filesync button:hover{ background:var(--paper-dim); }
-  .filesync button.primary{
-    background:var(--teal-dark);
-    color:var(--paper);
-    border-color:var(--teal-dark);
-  }
+  .filesync button.primary{ background:var(--teal-dark); color:var(--paper); border-color:var(--teal-dark); }
   .filesync button.primary:hover{ background:var(--teal); }
-  #fileStatus{
-    color:var(--ink-soft);
-  }
+  #fileStatus{ color:var(--ink-soft); }
   #fileStatus.connected{ color:var(--teal-dark); font-weight:600; }
   #fileStatus.needs-permission{ color:var(--clay); font-weight:600; }
 
-  footer{
-    margin-top:22px;
-    font-size:12px;
-    color:var(--ink-soft);
-    text-align:center;
-    font-family:'IBM Plex Mono', monospace;
+  footer{ margin-top:20px; font-size:12px; color:var(--ink-soft); text-align:center; font-family:'IBM Plex Mono', monospace; }
+  .loading{ text-align:center; padding:40px; color:var(--ink-soft); font-family:'IBM Plex Mono', monospace; font-size:13px; }
+
+  /* ---------- Modal ---------- */
+  .overlay{
+    display:none; position:fixed; inset:0; background:rgba(43,42,38,0.55);
+    align-items:flex-start; justify-content:center; padding:30px 16px; z-index:50; overflow-y:auto;
+  }
+  .overlay.active{ display:flex; }
+  .modal{
+    background:var(--paper); border:1.5px solid var(--ink); border-radius:14px;
+    max-width:560px; width:100%; padding:22px; margin-bottom:30px;
+  }
+  .modal h2{ font-family:'Fraunces', serif; font-size:22px; margin:0 0 14px; }
+  .modal-close{
+    float:right; width:32px; height:32px; border:1.5px solid var(--ink); background:var(--card);
+    border-radius:8px; cursor:pointer; font-size:15px;
+  }
+  .cal-list{ display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+  .cal-row{
+    display:flex; align-items:center; gap:8px; padding:10px 12px; background:var(--card);
+    border:1.5px solid var(--line); border-radius:10px;
+  }
+  .cal-row.is-active{ border-color:var(--teal); background:var(--check-bg); }
+  .cal-row .cal-info{ flex:1; cursor:pointer; }
+  .cal-row .cal-name{ font-weight:600; font-size:14px; }
+  .cal-row .cal-range{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--ink-soft); }
+  .cal-row .mini-btn{
+    width:30px; height:30px; border:1.3px solid var(--ink); background:var(--paper);
+    border-radius:7px; cursor:pointer; font-size:13px;
+  }
+  .cal-row .mini-btn:hover{ background:var(--paper-dim); }
+  .cal-row .mini-btn.danger{ border-color:var(--red); color:var(--red); }
+
+  .btn{
+    border:1.5px solid var(--ink); background:var(--card); border-radius:9px; padding:10px 16px;
+    font-weight:600; font-size:13px; cursor:pointer; color:var(--ink);
+  }
+  .btn:hover{ background:var(--paper-dim); }
+  .btn.primary{ background:var(--teal-dark); color:var(--paper); border-color:var(--teal-dark); }
+  .btn.primary:hover{ background:var(--teal); }
+  .btn.block{ width:100%; }
+
+  .section-title{ font-weight:600; font-size:13px; margin:18px 0 8px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.06em; }
+  .share-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  textarea.code-area{
+    width:100%; min-height:70px; font-family:'IBM Plex Mono', monospace; font-size:11px;
+    border:1.4px solid var(--line); border-radius:8px; padding:10px; background:var(--card); resize:vertical;
   }
 
-  .loading{
-    text-align:center;
-    padding:40px;
-    color:var(--ink-soft);
-    font-family:'IBM Plex Mono', monospace;
-    font-size:13px;
+  /* ---------- Edit form ---------- */
+  .form-row{ margin-bottom:12px; }
+  .form-row label{ display:block; font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:5px; }
+  .form-row input[type=text], .form-row input[type=date]{
+    width:100%; padding:9px 11px; border:1.4px solid var(--line); border-radius:8px;
+    font-family:'Inter', sans-serif; font-size:14px; background:var(--card); color:var(--ink);
   }
+  .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .activity-edit-row{ display:flex; gap:6px; align-items:center; margin-bottom:8px; }
+  .activity-edit-row input.act-icon-in{ width:44px; text-align:center; padding:9px 4px; }
+  .activity-edit-row input.act-label-in{ flex:1.3; }
+  .activity-edit-row input.act-time-in{ flex:1; }
+  .form-error{ color:var(--red); font-size:12px; margin-top:6px; display:none; }
+
+  /* ---------- Stopwatch ---------- */
+  .sw-card{
+    background:var(--card); border:1.5px solid var(--ink); border-radius:14px; padding:30px 20px;
+    text-align:center; margin-bottom:18px;
+  }
+  .sw-display{
+    font-family:'IBM Plex Mono', monospace; font-size:clamp(40px, 10vw, 62px); font-weight:600;
+    color:var(--ink); letter-spacing:0.02em; margin-bottom:20px;
+  }
+  .sw-display .cs{ font-size:0.5em; color:var(--ink-soft); }
+  .sw-btns{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .sw-btns button{
+    border:1.5px solid var(--ink); border-radius:10px; padding:12px 20px; font-weight:600;
+    font-size:14px; cursor:pointer; background:var(--card); color:var(--ink); min-width:120px;
+  }
+  .sw-btns button.start{ background:var(--teal-dark); color:var(--paper); border-color:var(--teal-dark); }
+  .sw-btns button.start:hover{ background:var(--teal); }
+  .sw-btns button.flag{ background:var(--clay); color:#fff; border-color:var(--clay); }
+  .sw-btns button.flag:hover{ opacity:.9; }
+  .sw-btns button:disabled{ opacity:.35; cursor:default; }
+  .flag-list{ display:flex; flex-direction:column; gap:6px; }
+  .flag-item{
+    display:flex; justify-content:space-between; align-items:center; background:var(--card);
+    border:1.4px solid var(--line); border-radius:9px; padding:10px 14px; font-family:'IBM Plex Mono', monospace; font-size:13px;
+  }
+  .flag-item .flag-num{ font-weight:600; color:var(--teal-dark); }
+  .flag-item .flag-split{ color:var(--ink-soft); }
+  .flag-item .flag-total{ font-weight:600; }
+  .flag-item .flag-del{ border:none; background:none; color:var(--red); cursor:pointer; font-size:13px; margin-left:10px; }
+  .empty-flags{ text-align:center; color:var(--ink-soft); font-size:13px; padding:16px; font-family:'IBM Plex Mono', monospace; }
+
+  /* ---------- Routine (interval timer) ---------- */
+  .back-link{
+    display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-weight:600;
+    font-size:13px; color:var(--teal-dark); margin-bottom:10px;
+  }
+  .back-link:hover{ text-decoration:underline; }
+  .routine-hint{ font-size:11px; opacity:.7; margin-left:4px; }
+  th.act-head{ cursor:pointer; }
+  th.act-head:hover{ background:var(--teal-dark) !important; }
+
+  .seg-row{
+    display:flex; gap:6px; align-items:center; margin-bottom:8px; background:var(--card);
+    border:1.4px solid var(--line); border-radius:9px; padding:8px 10px;
+  }
+  .seg-row input.seg-name{ flex:1.4; }
+  .seg-row input.seg-min, .seg-row input.seg-sec{ width:52px; text-align:center; }
+  .seg-row input{
+    padding:8px 9px; border:1.3px solid var(--line); border-radius:7px; font-family:'Inter',sans-serif;
+    font-size:13px; background:var(--paper); color:var(--ink);
+  }
+  .seg-row .seg-colon{ font-family:'IBM Plex Mono', monospace; color:var(--ink-soft); }
+  .seg-row .mini-btn{ flex-shrink:0; }
+  .seg-controls{ display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 6px; }
+  .loop-row{ display:flex; align-items:center; gap:8px; margin:14px 0; font-size:13px; font-weight:600; }
+  .routine-total{ font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--ink-soft); margin-bottom:14px; }
+
+  .rt-player{
+    background:var(--card); border:1.5px solid var(--ink); border-radius:14px; padding:26px 20px;
+    text-align:center; margin:20px 0 18px; transition:background .25s;
+  }
+  .rt-player.flash{ background:var(--check-bg); }
+  .rt-seg-name{ font-family:'Fraunces', serif; font-size:22px; font-weight:600; margin-bottom:6px; }
+  .rt-display{ font-family:'IBM Plex Mono', monospace; font-size:clamp(38px,9vw,56px); font-weight:600; margin-bottom:10px; }
+  .rt-progress{ height:8px; background:var(--paper-dim); border:1px solid var(--line); border-radius:20px; overflow:hidden; margin-bottom:10px; }
+  .rt-progress-fill{ height:100%; background:linear-gradient(90deg, var(--teal), var(--clay)); width:0%; transition:width .2s linear; }
+  .rt-next{ font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--ink-soft); margin-bottom:18px; }
+  .rt-btns{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .rt-btns button{
+    border:1.5px solid var(--ink); border-radius:10px; padding:11px 18px; font-weight:600;
+    font-size:13px; cursor:pointer; background:var(--card); color:var(--ink); min-width:100px;
+  }
+  .rt-btns button.start{ background:var(--teal-dark); color:var(--paper); border-color:var(--teal-dark); }
+  .rt-btns button.start:hover{ background:var(--teal); }
+  .rt-btns button.flag{ background:var(--clay); color:#fff; border-color:var(--clay); }
+  .rt-btns button:disabled{ opacity:.35; cursor:default; }
+  .rt-template-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
 
   @media (max-width:640px){
-    thead th.day-head{ width:100px; }
+    thead th.day-head{ width:96px; }
     .act-icon{ font-size:14px; }
     thead th{ font-size:9px; padding:8px 3px; }
     .chk{ width:22px; height:22px; font-size:12px; }
     .totals{ text-align:left; }
     header{ align-items:flex-start; }
+    .two-col{ grid-template-columns:1fr; }
   }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <header>
-    <div>
-      <p class="eyebrow">Julio 2026 · Del 1 al 25</p>
-      <h1>Calendario de&nbsp;actividades</h1>
-    </div>
-    <div class="totals">
-      <div class="big" id="overallCount">0/150</div>
-      <div class="label">Completado en total</div>
-    </div>
-  </header>
-
-  <div class="overall-bar"><div class="overall-bar-fill" id="overallFill"></div></div>
-
-  <div class="controls">
-    <div class="week-nav">
-      <button id="prevWeek" title="Semana anterior">‹</button>
-      <button id="nextWeek" title="Semana siguiente">›</button>
-    </div>
-    <div class="week-select-wrap">
-      <select id="weekSelect"></select>
-    </div>
-    <div class="week-progress" id="weekProgress"></div>
+  <div class="app-tabs">
+    <div class="app-tab active" data-tab="cal">📅 Calendario</div>
+    <div class="app-tab" data-tab="sw">⏱️ Cronómetro</div>
   </div>
 
-  <div class="card">
-    <div id="tableHost">
-      <div class="loading">Cargando tu progreso…</div>
+  <!-- ===================== CALENDAR VIEW ===================== -->
+  <div class="view active" id="view-cal">
+
+    <header>
+      <div>
+        <p class="eyebrow" id="calEyebrow">Cargando…</p>
+        <h1 id="calTitle">Calendario de actividades</h1>
+      </div>
+      <div class="totals">
+        <div class="big" id="overallCount">0/0</div>
+        <div class="label">Completado en total</div>
+      </div>
+    </header>
+
+    <div class="overall-bar"><div class="overall-bar-fill" id="overallFill"></div></div>
+
+    <div class="cal-switch">
+      <div class="cal-switch-btn" id="openManageBtn">
+        📁 <span id="switchLabel">Mis calendarios</span> <span class="tag">▾</span>
+      </div>
+      <button class="icon-btn" id="newCalBtn" title="Nuevo calendario">＋</button>
+      <button class="icon-btn" id="editCalBtn" title="Editar este calendario">✏️</button>
+    </div>
+
+    <div class="controls">
+      <div class="week-nav">
+        <button id="prevWeek" title="Semana anterior">‹</button>
+        <button id="nextWeek" title="Semana siguiente">›</button>
+      </div>
+      <div class="week-select-wrap">
+        <select id="weekSelect"></select>
+      </div>
+      <div class="week-progress" id="weekProgress"></div>
+    </div>
+
+    <div class="card">
+      <div id="tableHost"><div class="loading">Cargando tu progreso…</div></div>
+    </div>
+
+    <p class="legend">Haz clic en el nombre del día para marcar toda la jornada. Haz clic en el nombre de una actividad (⏱) para administrar sus bloques de tiempo.</p>
+
+    <div class="filesync">
+      <span class="fs-title">Guardar en un archivo de tu equipo</span>
+      <button id="connectFileBtn" class="primary">📁 Conectar archivo en mi carpeta</button>
+      <button id="exportBtn">⬇️ Exportar copia (.json)</button>
+      <button id="importBtn">⬆️ Importar copia (.json)</button>
+      <input type="file" id="importInput" accept="application/json" style="display:none">
+      <span id="fileStatus">Sin conectar — se está usando el guardado interno.</span>
+    </div>
+
+    <footer id="storageNote">Tu progreso se guarda automáticamente.</footer>
+  </div>
+
+  <!-- ===================== STOPWATCH VIEW ===================== -->
+  <div class="view" id="view-sw">
+    <header>
+      <div>
+        <p class="eyebrow">Herramienta</p>
+        <h1>Cronómetro</h1>
+      </div>
+    </header>
+
+    <div class="sw-card">
+      <div class="sw-display"><span id="swTime">00:00:00</span><span class="cs" id="swCs">.00</span></div>
+      <div class="sw-btns">
+        <button class="start" id="swStartBtn">▶ Iniciar</button>
+        <button class="flag" id="swFlagBtn" disabled>🚩 Marcar</button>
+        <button id="swResetBtn">⟲ Reiniciar</button>
+      </div>
+    </div>
+
+    <div id="flagListHost"><div class="empty-flags">Sin marcas todavía — inicia el cronómetro y toca "Marcar".</div></div>
+  </div>
+  <!-- ===================== ROUTINE / INTERVAL TIMER VIEW ===================== -->
+  <div class="view" id="view-routine">
+    <span class="back-link" id="rtBackLink">← Volver al calendario</span>
+    <header>
+      <div>
+        <p class="eyebrow">Administrador de tiempo</p>
+        <h1 id="rtTitle">Rutina</h1>
+      </div>
+    </header>
+
+    <div class="rt-template-row" id="rtTemplateRow"></div>
+
+    <div class="section-title">Bloques de tiempo</div>
+    <div id="segEditList"></div>
+    <div class="seg-controls">
+      <button class="btn" id="addSegBtn">＋ Añadir bloque</button>
+    </div>
+    <div class="loop-row">
+      <input type="checkbox" id="loopCheck"> <label for="loopCheck">🔁 Repetir en bucle al terminar</label>
+    </div>
+    <div class="routine-total" id="routineTotal"></div>
+    <button class="btn primary block" id="saveRoutineBtn">💾 Guardar bloques</button>
+
+    <div class="rt-player">
+      <div class="rt-seg-name" id="rtSegName">Sin iniciar</div>
+      <div class="rt-display"><span id="rtTime">00:00</span></div>
+      <div class="rt-progress"><div class="rt-progress-fill" id="rtProgressFill"></div></div>
+      <div class="rt-next" id="rtNext">Configura tus bloques y presiona Iniciar</div>
+      <div class="rt-btns">
+        <button class="start" id="rtStartBtn">▶ Iniciar</button>
+        <button id="rtSkipBtn" disabled>⏭ Saltar</button>
+        <button class="flag" id="rtFlagBtn" disabled>🚩 Marcar</button>
+        <button id="rtResetBtn">⟲ Reiniciar</button>
+      </div>
+    </div>
+
+    <div class="section-title">Marcas de esta sesión</div>
+    <div id="rtFlagListHost"><div class="empty-flags">Sin marcas todavía.</div></div>
+  </div>
+
+</div>
+
+<!-- ===================== MANAGE CALENDARS MODAL ===================== -->
+<div class="overlay" id="manageOverlay">
+  <div class="modal">
+    <button class="modal-close" id="closeManageBtn">✕</button>
+    <h2>Mis calendarios</h2>
+    <div class="cal-list" id="calList"></div>
+    <button class="btn primary block" id="createNewBtn">＋ Crear nuevo calendario</button>
+
+    <div class="section-title">Compartir / transferir a otro dispositivo</div>
+    <div class="share-row">
+      <button class="btn" id="copyCodeBtn">📋 Copiar código</button>
+      <button class="btn" id="pasteCodeBtn">📥 Pegar código</button>
+      <button class="btn" id="exportAllBtn">⬇️ Exportar todo (.json)</button>
+      <button class="btn" id="importAllBtn">⬆️ Importar (.json)</button>
+      <input type="file" id="importAllInput" accept="application/json" style="display:none">
+    </div>
+    <textarea class="code-area" id="codeArea" style="display:none" placeholder="Pega aquí el código que te compartieron…"></textarea>
+    <div style="display:none; margin-top:8px;" id="pasteConfirmRow">
+      <button class="btn primary" id="confirmPasteBtn">Importar este código</button>
     </div>
   </div>
+</div>
 
-  <div class="legend">
-    <span><i class="dot"></i> Actividad marcada</span>
-    <span>Haz clic en el nombre del día para marcar toda la jornada</span>
+<!-- ===================== EDIT CALENDAR MODAL ===================== -->
+<div class="overlay" id="editOverlay">
+  <div class="modal">
+    <button class="modal-close" id="closeEditBtn">✕</button>
+    <h2 id="editModalTitle">Editar calendario</h2>
+
+    <div class="form-row">
+      <label>Nombre del calendario</label>
+      <input type="text" id="fName" placeholder="Ej. Rutina de verano">
+    </div>
+    <div class="two-col">
+      <div class="form-row">
+        <label>Fecha inicio</label>
+        <input type="date" id="fStart">
+      </div>
+      <div class="form-row">
+        <label>Fecha fin</label>
+        <input type="date" id="fEnd">
+      </div>
+    </div>
+
+    <div class="section-title">Actividades del día</div>
+    <div id="activityEditList"></div>
+    <button class="btn" id="addActivityBtn">＋ Añadir actividad</button>
+
+    <p class="form-error" id="formError"></p>
+
+    <div style="display:flex; gap:10px; margin-top:18px;">
+      <button class="btn primary block" id="saveCalBtn">Guardar calendario</button>
+    </div>
   </div>
-
-  <div class="filesync">
-    <span class="fs-title">Guardar en un archivo de tu equipo</span>
-    <button id="connectFileBtn" class="primary">📁 Conectar archivo en mi carpeta</button>
-    <button id="exportBtn">⬇️ Exportar copia (.json)</button>
-    <button id="importBtn">⬆️ Importar copia (.json)</button>
-    <input type="file" id="importInput" accept="application/json" style="display:none">
-    <span id="fileStatus">Sin conectar — se está usando el guardado interno.</span>
-  </div>
-
-  <footer id="storageNote">Tu progreso se guarda automáticamente.</footer>
 </div>
 
 <script>
-const ACTIVITIES = [
-  { id:'ej1',  icon:'💪', label:'Ejercicio',   time:'6:00–8:00 a. m.' },
-  { id:'des',  icon:'🥣', label:'Desayuno',     time:'8:00–9:00 a. m.' },
-  { id:'trab', icon:'💼', label:'Trabajo',      time:'9:00 a. m.–5:00 p. m.' },
-  { id:'ej2',  icon:'💪', label:'Ejercicio',   time:'5:00–6:00 p. m.' },
-  { id:'jue',  icon:'🎮', label:'Juegos',       time:'6:00–10:00 p. m.' },
-  { id:'dor',  icon:'😴', label:'Dormir',       time:'10:00 p. m.–6:00 a. m.' },
-];
+// =====================================================================
+// STORAGE HELPERS
+// =====================================================================
+const APP_KEY = 'calendarios-app-v1';
+const LEGACY_KEY = 'daily-checklist-julio-2026';
 
+const hasClaudeStorage = () => (typeof window.storage !== 'undefined' && window.storage && typeof window.storage.get === 'function');
+
+async function storageGet(key){
+  if(hasClaudeStorage()){
+    try{
+      const res = await window.storage.get(key, false);
+      return res && res.value ? res.value : null;
+    }catch(e){ /* fall through */ }
+  }
+  try{ return localStorage.getItem(key); }catch(e){ return null; }
+}
+async function storageSet(key, value){
+  let ok = false;
+  if(hasClaudeStorage()){
+    try{ await window.storage.set(key, value, false); ok = true; }catch(e){ /* fall through */ }
+  }
+  if(!ok){
+    try{ localStorage.setItem(key, value); }catch(e){ console.error('No se pudo guardar', e); }
+  }
+}
+
+// =====================================================================
+// DATE HELPERS
+// =====================================================================
 const DIAS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 const MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
 
-function buildDates(){
+function parseISO(str){
+  const [y,m,d] = str.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+function fmtKey(date){
+  return date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0') + '-' + String(date.getDate()).padStart(2,'0');
+}
+function fmtShort(date){ return date.getDate() + ' ' + MESES[date.getMonth()]; }
+
+function buildDates(cal){
+  const start = parseISO(cal.startDate);
+  const end = parseISO(cal.endDate);
   const dates = [];
-  for(let d = 1; d <= 25; d++){
-    dates.push(new Date(2026, 6, d));
+  let cur = new Date(start);
+  let guard = 0;
+  while(cur <= end && guard < 2000){
+    dates.push(new Date(cur));
+    cur.setDate(cur.getDate()+1);
+    guard++;
   }
   return dates;
 }
-const ALL_DATES = buildDates();
-
 function mondayOf(date){
   const d = new Date(date);
   const day = d.getDay();
@@ -397,100 +615,105 @@ function mondayOf(date){
   d.setHours(0,0,0,0);
   return d;
 }
-function fmtKey(date){
-  return date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0') + '-' + String(date.getDate()).padStart(2,'0');
-}
-function fmtShort(date){
-  return date.getDate() + ' ' + MESES[date.getMonth()];
-}
-
-function buildWeeks(){
+function buildWeeks(dates){
   const map = new Map();
-  ALL_DATES.forEach(date => {
+  dates.forEach(date => {
     const key = fmtKey(mondayOf(date));
     if(!map.has(key)) map.set(key, []);
     map.get(key).push(date);
   });
-  const weeks = Array.from(map.entries())
+  return Array.from(map.entries())
     .sort((a,b) => a[0].localeCompare(b[0]))
-    .map(([key, dates], i) => ({
-      id: key,
-      index: i,
-      dates,
-      label: `Semana ${i+1} · ${fmtShort(dates[0])}–${fmtShort(dates[dates.length-1])}`
+    .map(([key, ds], i) => ({
+      id:key, index:i, dates:ds,
+      label:`Semana ${i+1} · ${fmtShort(ds[0])}–${fmtShort(ds[ds.length-1])}`
     }));
-  return weeks;
 }
-const WEEKS = buildWeeks();
 
-let checks = {};
+function uid(prefix){ return prefix + '_' + Math.random().toString(36).slice(2,9); }
+
+// =====================================================================
+// DEFAULT DATA
+// =====================================================================
+function defaultActivities(){
+  return [
+    { id:'ej1',  icon:'💪', label:'Ejercicio', time:'6:00–8:00 a. m.' },
+    { id:'des',  icon:'🥣', label:'Desayuno',   time:'8:00–9:00 a. m.' },
+    { id:'trab', icon:'💼', label:'Trabajo',    time:'9:00 a. m.–5:00 p. m.' },
+    { id:'ej2',  icon:'💪', label:'Ejercicio', time:'5:00–6:00 p. m.' },
+    { id:'jue',  icon:'🎮', label:'Juegos',     time:'6:00–10:00 p. m.' },
+    { id:'dor',  icon:'😴', label:'Dormir',     time:'10:00 p. m.–6:00 a. m.' },
+  ];
+}
+function makeDefaultCalendar(){
+  return {
+    id: 'cal_default',
+    name: 'Julio 2026',
+    startDate: '2026-07-01',
+    endDate: '2026-07-25',
+    activities: defaultActivities(),
+    checks: {}
+  };
+}
+
+// =====================================================================
+// APP STATE
+// =====================================================================
+let appState = { activeId: 'cal_default', calendars: { cal_default: makeDefaultCalendar() } };
 let currentWeekIndex = 0;
-const STORAGE_KEY = 'daily-checklist-julio-2026';
 
-const hasClaudeStorage = () => (typeof window.storage !== 'undefined' && window.storage && typeof window.storage.get === 'function');
+function activeCal(){ return appState.calendars[appState.activeId]; }
 
-async function loadState(){
-  // Preferred: Claude's built-in persistent storage (works when viewed inside Claude).
-  if(hasClaudeStorage()){
-    try{
-      const res = await window.storage.get(STORAGE_KEY, false);
-      if(res && res.value){ checks = JSON.parse(res.value); }
-      return;
-    }catch(e){ /* fall through to local fallback */ }
+async function loadAppState(){
+  const raw = await storageGet(APP_KEY);
+  if(raw){
+    try{ appState = JSON.parse(raw); return; }catch(e){ /* corrupted, fall through to default */ }
   }
-  // Fallback: browser's own storage (works when the file is opened directly, outside Claude).
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(raw) checks = JSON.parse(raw);
-  }catch(e){
-    checks = {};
+  // migrate legacy single-calendar checklist if present
+  const legacyRaw = await storageGet(LEGACY_KEY);
+  if(legacyRaw){
+    try{
+      const legacyChecks = JSON.parse(legacyRaw);
+      const cal = makeDefaultCalendar();
+      cal.checks = legacyChecks;
+      appState = { activeId: cal.id, calendars: { [cal.id]: cal } };
+    }catch(e){ /* ignore, use fresh default */ }
   }
 }
-async function saveState(){
-  let savedRemotely = false;
-  if(hasClaudeStorage()){
-    try{
-      await window.storage.set(STORAGE_KEY, JSON.stringify(checks), false);
-      savedRemotely = true;
-    }catch(e){ /* fall through to local fallback */ }
-  }
-  if(!savedRemotely){
-    try{
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(checks));
-    }catch(e){
-      console.error('No se pudo guardar el progreso', e);
-    }
-  }
+async function saveAppState(){
+  await storageSet(APP_KEY, JSON.stringify(appState));
   if(fileHandle){ writeToFile(); }
 }
 
-function cellKey(date, actId){
-  return fmtKey(date) + '_' + actId;
+// =====================================================================
+// CALENDAR VIEW RENDERING
+// =====================================================================
+function cellKey(date, actId){ return fmtKey(date) + '_' + actId; }
+
+function computeProgress(cal, dates){
+  let done = 0;
+  dates.forEach(date => cal.activities.forEach(a => { if(cal.checks[cellKey(date,a.id)]) done++; }));
+  return { done, total: dates.length * cal.activities.length };
 }
 
-function computeOverall(){
-  let done = 0;
-  ALL_DATES.forEach(date => {
-    ACTIVITIES.forEach(a => { if(checks[cellKey(date,a.id)]) done++; });
-  });
-  return { done, total: ALL_DATES.length * ACTIVITIES.length };
-}
-function computeWeek(week){
-  let done = 0;
-  week.dates.forEach(date => {
-    ACTIVITIES.forEach(a => { if(checks[cellKey(date,a.id)]) done++; });
-  });
-  return { done, total: week.dates.length * ACTIVITIES.length };
-}
-
-function renderHeaderStats(){
-  const o = computeOverall();
+function renderHeader(){
+  const cal = activeCal();
+  document.getElementById('calTitle').textContent = cal.name;
+  const dates = buildDates(cal);
+  document.getElementById('calEyebrow').textContent =
+    dates.length ? `${fmtShort(dates[0])} – ${fmtShort(dates[dates.length-1])} · ${dates.length} días` : 'Sin días configurados';
+  const o = computeProgress(cal, dates);
   document.getElementById('overallCount').textContent = `${o.done}/${o.total}`;
   document.getElementById('overallFill').style.width = (o.total ? (o.done/o.total*100) : 0) + '%';
+  document.getElementById('switchLabel').textContent = cal.name;
+}
 
-  const week = WEEKS[currentWeekIndex];
-  const w = computeWeek(week);
-  document.getElementById('weekProgress').innerHTML = `<b>${w.done}/${w.total}</b> esta semana`;
+let WEEKS = [];
+function refreshWeeks(){
+  const cal = activeCal();
+  const dates = buildDates(cal);
+  WEEKS = buildWeeks(dates);
+  if(currentWeekIndex >= WEEKS.length) currentWeekIndex = Math.max(0, WEEKS.length - 1);
 }
 
 function renderWeekSelect(){
@@ -502,27 +725,33 @@ function renderWeekSelect(){
     opt.textContent = week.label;
     sel.appendChild(opt);
   });
-  sel.value = currentWeekIndex;
+  if(WEEKS.length) sel.value = currentWeekIndex;
 }
 
 function renderTable(){
-  const week = WEEKS[currentWeekIndex];
+  const cal = activeCal();
   const host = document.getElementById('tableHost');
+  if(!WEEKS.length){
+    host.innerHTML = '<div class="loading">Este calendario no tiene días en su rango de fechas. Edítalo para ajustar las fechas.</div>';
+    document.getElementById('weekProgress').textContent = '';
+    return;
+  }
+  const week = WEEKS[currentWeekIndex];
 
   let thead = '<thead><tr><th class="day-head">Día</th>' +
-    ACTIVITIES.map(a => `<th class="act-head"><span class="act-icon">${a.icon}</span>${a.label}<br><span style="opacity:.65;font-weight:400">${a.time}</span></th>`).join('') +
+    cal.activities.map(a => `<th class="act-head" data-actid="${a.id}"><span class="act-icon">${a.icon}</span>${a.label}<span class="routine-hint">⏱</span><br><span style="opacity:.65;font-weight:400">${a.time}</span></th>`).join('') +
     '</tr></thead>';
 
   let rows = week.dates.map(date => {
     const key = fmtKey(date);
-    const cells = ACTIVITIES.map(a => {
-      const on = !!checks[cellKey(date,a.id)];
+    const cells = cal.activities.map(a => {
+      const on = !!cal.checks[cellKey(date,a.id)];
       return `<td><div class="chk ${on?'checked':''}" data-key="${cellKey(date,a.id)}">${on?'✓':''}</div></td>`;
     }).join('');
     return `<tr>
       <td class="day-cell" data-daykey="${key}">
         <div class="day-name">${DIAS[date.getDay()]}</div>
-        <div class="day-date">${fmtShort(date)} · 2026</div>
+        <div class="day-date">${fmtShort(date)}</div>
       </td>
       ${cells}
     </tr>`;
@@ -533,54 +762,299 @@ function renderTable(){
   host.querySelectorAll('.chk').forEach(el => {
     el.addEventListener('click', () => {
       const k = el.dataset.key;
-      checks[k] = !checks[k];
-      el.classList.toggle('checked', checks[k]);
-      el.textContent = checks[k] ? '✓' : '';
-      renderHeaderStats();
-      saveState();
+      cal.checks[k] = !cal.checks[k];
+      el.classList.toggle('checked', cal.checks[k]);
+      el.textContent = cal.checks[k] ? '✓' : '';
+      renderHeader();
+      renderWeekProgress();
+      saveAppState();
     });
   });
-
   host.querySelectorAll('.day-cell').forEach(el => {
     el.addEventListener('click', () => {
       const dayKey = el.dataset.daykey;
       const date = week.dates.find(d => fmtKey(d) === dayKey);
-      const allOn = ACTIVITIES.every(a => checks[cellKey(date,a.id)]);
-      ACTIVITIES.forEach(a => { checks[cellKey(date,a.id)] = !allOn; });
+      const allOn = cal.activities.every(a => cal.checks[cellKey(date,a.id)]);
+      cal.activities.forEach(a => { cal.checks[cellKey(date,a.id)] = !allOn; });
       renderTable();
-      renderHeaderStats();
-      saveState();
+      renderHeader();
+      renderWeekProgress();
+      saveAppState();
     });
+  });
+  host.querySelectorAll('th.act-head').forEach(el => {
+    el.addEventListener('click', () => openRoutine(cal.id, el.dataset.actid));
   });
 }
 
-function updateNavButtons(){
+function renderWeekProgress(){
+  if(!WEEKS.length){ return; }
+  const cal = activeCal();
+  const week = WEEKS[currentWeekIndex];
+  const w = computeProgress(cal, week.dates);
+  document.getElementById('weekProgress').innerHTML = `<b>${w.done}/${w.total}</b> esta semana`;
   document.getElementById('prevWeek').disabled = currentWeekIndex === 0;
   document.getElementById('nextWeek').disabled = currentWeekIndex === WEEKS.length - 1;
 }
 
-function renderAll(){
+function renderCalendarView(){
+  refreshWeeks();
+  renderHeader();
   renderWeekSelect();
   renderTable();
-  renderHeaderStats();
-  updateNavButtons();
+  renderWeekProgress();
 }
 
 document.getElementById('weekSelect').addEventListener('change', (e) => {
   currentWeekIndex = parseInt(e.target.value, 10);
-  renderTable();
-  renderHeaderStats();
-  updateNavButtons();
-  document.getElementById('weekSelect').value = currentWeekIndex;
+  renderTable(); renderWeekProgress();
 });
 document.getElementById('prevWeek').addEventListener('click', () => {
-  if(currentWeekIndex > 0){ currentWeekIndex--; renderAll(); }
+  if(currentWeekIndex > 0){ currentWeekIndex--; renderWeekSelect(); renderTable(); renderWeekProgress(); }
 });
 document.getElementById('nextWeek').addEventListener('click', () => {
-  if(currentWeekIndex < WEEKS.length - 1){ currentWeekIndex++; renderAll(); }
+  if(currentWeekIndex < WEEKS.length - 1){ currentWeekIndex++; renderWeekSelect(); renderTable(); renderWeekProgress(); }
 });
 
-// ---------- Guardado directo en un archivo de la carpeta del usuario ----------
+// =====================================================================
+// APP TABS
+// =====================================================================
+function showView(name){
+  document.querySelectorAll('.app-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+}
+document.querySelectorAll('.app-tab').forEach(tab => {
+  tab.addEventListener('click', () => showView(tab.dataset.tab));
+});
+
+// =====================================================================
+// MANAGE CALENDARS MODAL
+// =====================================================================
+const manageOverlay = document.getElementById('manageOverlay');
+document.getElementById('openManageBtn').addEventListener('click', () => { renderCalList(); manageOverlay.classList.add('active'); });
+document.getElementById('closeManageBtn').addEventListener('click', () => manageOverlay.classList.remove('active'));
+manageOverlay.addEventListener('click', (e) => { if(e.target === manageOverlay) manageOverlay.classList.remove('active'); });
+
+function renderCalList(){
+  const host = document.getElementById('calList');
+  host.innerHTML = '';
+  Object.values(appState.calendars).forEach(cal => {
+    const dates = buildDates(cal);
+    const row = document.createElement('div');
+    row.className = 'cal-row' + (cal.id === appState.activeId ? ' is-active' : '');
+    row.innerHTML = `
+      <div class="cal-info">
+        <div class="cal-name">${cal.name}</div>
+        <div class="cal-range">${dates.length ? fmtShort(dates[0]) + ' – ' + fmtShort(dates[dates.length-1]) : 'sin fechas'} · ${dates.length} días</div>
+      </div>
+      <button class="mini-btn" data-act="edit" title="Editar">✏️</button>
+      <button class="mini-btn" data-act="dup" title="Duplicar">📄</button>
+      <button class="mini-btn danger" data-act="del" title="Eliminar">🗑️</button>
+    `;
+    row.querySelector('.cal-info').addEventListener('click', () => {
+      appState.activeId = cal.id;
+      currentWeekIndex = 0;
+      saveAppState();
+      renderCalendarView();
+      renderCalList();
+    });
+    row.querySelector('[data-act="edit"]').addEventListener('click', (e) => { e.stopPropagation(); openEditModal(cal.id); });
+    row.querySelector('[data-act="dup"]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const copy = JSON.parse(JSON.stringify(cal));
+      copy.id = uid('cal');
+      copy.name = cal.name + ' (copia)';
+      appState.calendars[copy.id] = copy;
+      saveAppState();
+      renderCalList();
+    });
+    row.querySelector('[data-act="del"]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if(Object.keys(appState.calendars).length <= 1){
+        alert('No puedes eliminar tu único calendario. Crea otro primero si quieres reemplazarlo.');
+        return;
+      }
+      if(!confirm(`¿Eliminar "${cal.name}"? Se perderá todo su progreso.`)) return;
+      delete appState.calendars[cal.id];
+      if(appState.activeId === cal.id){
+        appState.activeId = Object.keys(appState.calendars)[0];
+        currentWeekIndex = 0;
+      }
+      saveAppState();
+      renderCalList();
+      renderCalendarView();
+    });
+    host.appendChild(row);
+  });
+}
+
+document.getElementById('newCalBtn').addEventListener('click', () => openEditModal(null));
+document.getElementById('editCalBtn').addEventListener('click', () => openEditModal(appState.activeId));
+document.getElementById('createNewBtn').addEventListener('click', () => openEditModal(null));
+
+// =====================================================================
+// EDIT CALENDAR MODAL
+// =====================================================================
+const editOverlay = document.getElementById('editOverlay');
+let editingId = null;
+let editingActivities = [];
+
+function openEditModal(calId){
+  editingId = calId;
+  const cal = calId ? appState.calendars[calId] : null;
+  document.getElementById('editModalTitle').textContent = cal ? 'Editar calendario' : 'Nuevo calendario';
+  document.getElementById('fName').value = cal ? cal.name : '';
+  document.getElementById('fStart').value = cal ? cal.startDate : '';
+  document.getElementById('fEnd').value = cal ? cal.endDate : '';
+  editingActivities = cal ? JSON.parse(JSON.stringify(cal.activities)) : defaultActivities().map(a => ({...a, id: uid('act')}));
+  document.getElementById('formError').style.display = 'none';
+  renderActivityEditList();
+  manageOverlay.classList.remove('active');
+  editOverlay.classList.add('active');
+}
+document.getElementById('closeEditBtn').addEventListener('click', () => editOverlay.classList.remove('active'));
+editOverlay.addEventListener('click', (e) => { if(e.target === editOverlay) editOverlay.classList.remove('active'); });
+
+function renderActivityEditList(){
+  const host = document.getElementById('activityEditList');
+  host.innerHTML = '';
+  editingActivities.forEach((a, i) => {
+    const row = document.createElement('div');
+    row.className = 'activity-edit-row';
+    row.innerHTML = `
+      <input type="text" class="act-icon-in" maxlength="4" value="${a.icon}">
+      <input type="text" class="act-label-in" placeholder="Actividad" value="${a.label}">
+      <input type="text" class="act-time-in" placeholder="Horario" value="${a.time}">
+      <button class="mini-btn danger" title="Eliminar">🗑️</button>
+    `;
+    const [iconIn, labelIn, timeIn] = row.querySelectorAll('input');
+    iconIn.addEventListener('input', () => editingActivities[i].icon = iconIn.value);
+    labelIn.addEventListener('input', () => editingActivities[i].label = labelIn.value);
+    timeIn.addEventListener('input', () => editingActivities[i].time = timeIn.value);
+    row.querySelector('button').addEventListener('click', () => {
+      if(editingActivities.length <= 1){ alert('Debe quedar al menos una actividad.'); return; }
+      editingActivities.splice(i,1);
+      renderActivityEditList();
+    });
+    host.appendChild(row);
+  });
+}
+document.getElementById('addActivityBtn').addEventListener('click', () => {
+  editingActivities.push({ id: uid('act'), icon:'⭐', label:'Nueva actividad', time:'' });
+  renderActivityEditList();
+});
+
+document.getElementById('saveCalBtn').addEventListener('click', () => {
+  const name = document.getElementById('fName').value.trim();
+  const start = document.getElementById('fStart').value;
+  const end = document.getElementById('fEnd').value;
+  const errEl = document.getElementById('formError');
+
+  if(!name || !start || !end){
+    errEl.textContent = 'Completa el nombre y ambas fechas.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if(parseISO(end) < parseISO(start)){
+    errEl.textContent = 'La fecha de fin debe ser posterior a la de inicio.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if(editingActivities.some(a => !a.label.trim())){
+    errEl.textContent = 'Todas las actividades necesitan un nombre.';
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  if(editingId && appState.calendars[editingId]){
+    const cal = appState.calendars[editingId];
+    cal.name = name; cal.startDate = start; cal.endDate = end; cal.activities = editingActivities;
+  }else{
+    const id = uid('cal');
+    appState.calendars[id] = { id, name, startDate:start, endDate:end, activities:editingActivities, checks:{} };
+    appState.activeId = id;
+    currentWeekIndex = 0;
+  }
+  saveAppState();
+  editOverlay.classList.remove('active');
+  renderCalendarView();
+});
+
+// =====================================================================
+// SHARE / EXPORT / IMPORT (whole app state)
+// =====================================================================
+function exportAllBlob(){
+  return new Blob([JSON.stringify(appState, null, 2)], { type:'application/json' });
+}
+document.getElementById('exportAllBtn').addEventListener('click', () => {
+  const url = URL.createObjectURL(exportAllBlob());
+  const a = document.createElement('a');
+  a.href = url; a.download = 'mis-calendarios.json'; a.click();
+  URL.revokeObjectURL(url);
+});
+document.getElementById('importAllBtn').addEventListener('click', () => document.getElementById('importAllInput').click());
+document.getElementById('importAllInput').addEventListener('change', (e) => {
+  if(!e.target.files || !e.target.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = () => applyImportedState(reader.result);
+  reader.readAsText(e.target.files[0]);
+  e.target.value = '';
+});
+
+function applyImportedState(text){
+  try{
+    const incoming = JSON.parse(text);
+    if(!incoming.calendars) throw new Error('formato inválido');
+    Object.assign(appState.calendars, incoming.calendars);
+    if(incoming.activeId && appState.calendars[incoming.activeId]) appState.activeId = incoming.activeId;
+    saveAppState();
+    renderCalList();
+    renderCalendarView();
+    alert('Calendarios importados con éxito.');
+  }catch(e){
+    alert('No se pudo leer ese código o archivo. Verifica que sea válido.');
+  }
+}
+
+document.getElementById('copyCodeBtn').addEventListener('click', async () => {
+  const code = btoa(unescape(encodeURIComponent(JSON.stringify(appState))));
+  try{
+    await navigator.clipboard.writeText(code);
+    alert('Código copiado. Pégalo en "Pegar código" en tu otro dispositivo.');
+  }catch(e){
+    const area = document.getElementById('codeArea');
+    area.style.display = 'block';
+    area.value = code;
+    area.select();
+  }
+});
+document.getElementById('pasteCodeBtn').addEventListener('click', () => {
+  const area = document.getElementById('codeArea');
+  const confirmRow = document.getElementById('pasteConfirmRow');
+  area.style.display = 'block';
+  area.value = '';
+  area.placeholder = 'Pega aquí el código que te compartieron…';
+  area.focus();
+  confirmRow.style.display = 'block';
+});
+document.getElementById('confirmPasteBtn').addEventListener('click', () => {
+  const raw = document.getElementById('codeArea').value.trim();
+  if(!raw) return;
+  try{
+    const json = decodeURIComponent(escape(atob(raw)));
+    applyImportedState(json);
+    document.getElementById('codeArea').style.display = 'none';
+    document.getElementById('pasteConfirmRow').style.display = 'none';
+  }catch(e){
+    alert('Ese código no es válido.');
+  }
+});
+
+// =====================================================================
+// FILE SYSTEM ACCESS (save straight to a file on device)
+// =====================================================================
 let fileHandle = null;
 
 function idbOpen(){
@@ -609,51 +1083,41 @@ async function idbGet(key){
     req.onerror = () => reject(req.error);
   });
 }
-
 async function verifyPermission(handle, withRequest){
-  const opts = { mode: 'readwrite' };
+  const opts = { mode:'readwrite' };
   if((await handle.queryPermission(opts)) === 'granted') return true;
-  if(withRequest){
-    if((await handle.requestPermission(opts)) === 'granted') return true;
-  }
+  if(withRequest){ if((await handle.requestPermission(opts)) === 'granted') return true; }
   return false;
 }
-
 function setFileStatus(text, cls){
   const el = document.getElementById('fileStatus');
-  el.textContent = text;
-  el.className = cls || '';
+  el.textContent = text; el.className = cls || '';
 }
-
 async function writeToFile(){
   if(!fileHandle) return;
   const ok = await verifyPermission(fileHandle, true);
   if(!ok) return;
   try{
     const writable = await fileHandle.createWritable();
-    await writable.write(JSON.stringify(checks, null, 2));
+    await writable.write(JSON.stringify(appState, null, 2));
     await writable.close();
   }catch(e){ console.error('No se pudo escribir el archivo', e); }
 }
-
 async function connectFile(){
   if(!('showSaveFilePicker' in window)){
-    alert('Tu navegador no permite guardar directo en una carpeta (esta función solo existe en Chrome o Edge de escritorio). Usa "Exportar copia" e "Importar copia" como alternativa.');
+    alert('Tu navegador no permite guardar directo en una carpeta (solo Chrome/Edge de escritorio). Usa "Exportar copia" e "Importar copia".');
     return;
   }
   try{
     fileHandle = await window.showSaveFilePicker({
       suggestedName: 'progreso-calendario.json',
-      types: [{ description: 'Progreso del calendario', accept: { 'application/json': ['.json'] } }]
+      types: [{ description:'Progreso del calendario', accept:{'application/json':['.json']} }]
     });
     await idbSet('fileHandle', fileHandle);
     await writeToFile();
     setFileStatus(`Conectado a "${fileHandle.name}" — se guarda ahí en cada cambio.`, 'connected');
-  }catch(e){
-    // el usuario cerró el selector sin elegir archivo
-  }
+  }catch(e){ /* selector cerrado sin elegir */ }
 }
-
 async function tryReconnectFile(){
   try{
     const handle = await idbGet('fileHandle');
@@ -664,61 +1128,453 @@ async function tryReconnectFile(){
       const file = await handle.getFile();
       const text = await file.text();
       if(text && text.trim()){
-        try{
-          checks = JSON.parse(text);
-          renderAll();
-        }catch(e){ /* archivo vacío o corrupto, se conserva lo que ya había */ }
+        try{ appState = JSON.parse(text); renderCalendarView(); }catch(e){ /* conserva lo que había */ }
       }
       setFileStatus(`Conectado a "${handle.name}" — se guarda ahí en cada cambio.`, 'connected');
     }else{
       setFileStatus(`Archivo "${handle.name}" conectado antes — haz clic para reactivar el permiso.`, 'needs-permission');
     }
-  }catch(e){ /* sin archivo conectado todavía */ }
+  }catch(e){ /* sin archivo conectado */ }
 }
+document.getElementById('connectFileBtn').addEventListener('click', connectFile);
+if(!('showSaveFilePicker' in window)){ document.getElementById('connectFileBtn').style.display = 'none'; }
 
-function exportProgress(){
-  const blob = new Blob([JSON.stringify(checks, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const url = URL.createObjectURL(exportAllBlob());
   const a = document.createElement('a');
-  a.href = url;
-  a.download = 'progreso-calendario.json';
-  a.click();
+  a.href = url; a.download = 'progreso-calendario.json'; a.click();
   URL.revokeObjectURL(url);
-}
-
-function importProgress(file){
-  const reader = new FileReader();
-  reader.onload = () => {
-    try{
-      checks = JSON.parse(reader.result);
-      renderAll();
-      saveState();
-    }catch(e){
-      alert('No se pudo leer ese archivo. Asegúrate de elegir un .json exportado desde este calendario.');
-    }
-  };
-  reader.readAsText(file);
-}
-
-document.getElementById('connectFileBtn').addEventListener('click', () => {
-  if(fileHandle){ connectFile(); } else { connectFile(); }
 });
-if(!('showSaveFilePicker' in window)){
-  document.getElementById('connectFileBtn').style.display = 'none';
-}
-document.getElementById('exportBtn').addEventListener('click', exportProgress);
-document.getElementById('importBtn').addEventListener('click', () => {
-  document.getElementById('importInput').click();
-});
+document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importInput').click());
 document.getElementById('importInput').addEventListener('change', (e) => {
-  if(e.target.files && e.target.files[0]) importProgress(e.target.files[0]);
+  if(!e.target.files || !e.target.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = () => applyImportedState(reader.result);
+  reader.readAsText(e.target.files[0]);
   e.target.value = '';
 });
-// ---------------------------------------------------------------------------
 
+// =====================================================================
+// STOPWATCH WITH FLAGS
+// =====================================================================
+const SW_KEY = 'cronometro-v1';
+let swElapsed = 0;      // ms accumulated while paused
+let swRunning = false;
+let swStartTs = 0;
+let swFlags = [];        // [{ totalMs }]
+let swTickHandle = null;
+
+function swFormat(ms){
+  const totalCs = Math.floor(ms / 10);
+  const cs = totalCs % 100;
+  const totalSec = Math.floor(totalCs / 100);
+  const s = totalSec % 60;
+  const totalMin = Math.floor(totalSec / 60);
+  const m = totalMin % 60;
+  const h = Math.floor(totalMin / 60);
+  return {
+    main: String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0'),
+    cs: String(cs).padStart(2,'0')
+  };
+}
+function swCurrentMs(){ return swRunning ? swElapsed + (Date.now() - swStartTs) : swElapsed; }
+
+function swRenderDisplay(){
+  const f = swFormat(swCurrentMs());
+  document.getElementById('swTime').textContent = f.main;
+  document.getElementById('swCs').textContent = '.' + f.cs;
+}
+function swRenderFlags(){
+  const host = document.getElementById('flagListHost');
+  if(!swFlags.length){
+    host.innerHTML = '<div class="empty-flags">Sin marcas todavía — inicia el cronómetro y toca "Marcar".</div>';
+    return;
+  }
+  const rows = swFlags.map((f, i) => {
+    const prevTotal = i > 0 ? swFlags[i-1].totalMs : 0;
+    const split = f.totalMs - prevTotal;
+    return `<div class="flag-item">
+      <span class="flag-num">🚩 ${i+1}</span>
+      <span class="flag-split">parcial ${swFormat(split).main}.${swFormat(split).cs}</span>
+      <span class="flag-total">${swFormat(f.totalMs).main}.${swFormat(f.totalMs).cs}</span>
+      <button class="flag-del" data-i="${i}">✕</button>
+    </div>`;
+  }).reverse().join('');
+  host.innerHTML = `<div class="flag-list">${rows}</div>`;
+  host.querySelectorAll('.flag-del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      swFlags.splice(parseInt(btn.dataset.i,10), 1);
+      swRenderFlags();
+      swPersist();
+    });
+  });
+}
+function swPersist(){
+  storageSet(SW_KEY, JSON.stringify({ elapsed: swCurrentMs(), flags: swFlags }));
+}
+async function swLoad(){
+  const raw = await storageGet(SW_KEY);
+  if(raw){
+    try{
+      const data = JSON.parse(raw);
+      swElapsed = data.elapsed || 0;
+      swFlags = data.flags || [];
+    }catch(e){ /* ignore */ }
+  }
+  swRenderDisplay();
+  swRenderFlags();
+}
+function swTick(){ swRenderDisplay(); swUpdateButtons(); swTickHandle = requestAnimationFrame(swTick); }
+
+function swUpdateButtons(){
+  const startBtn = document.getElementById('swStartBtn');
+  startBtn.textContent = swRunning ? '⏸ Pausar' : '▶ Iniciar';
+  startBtn.classList.toggle('start', !swRunning);
+  document.getElementById('swFlagBtn').disabled = !swRunning && swCurrentMs() === 0;
+}
+
+document.getElementById('swStartBtn').addEventListener('click', () => {
+  if(swRunning){
+    swElapsed = swCurrentMs();
+    swRunning = false;
+    cancelAnimationFrame(swTickHandle);
+    swPersist();
+  }else{
+    swStartTs = Date.now();
+    swRunning = true;
+    swTick();
+  }
+  swUpdateButtons();
+});
+document.getElementById('swFlagBtn').addEventListener('click', () => {
+  swFlags.push({ totalMs: swCurrentMs() });
+  swRenderFlags();
+  swPersist();
+  swUpdateButtons();
+});
+document.getElementById('swResetBtn').addEventListener('click', () => {
+  if(swRunning && !confirm('El cronómetro está corriendo. ¿Reiniciar de todos modos?')) return;
+  swRunning = false;
+  cancelAnimationFrame(swTickHandle);
+  swElapsed = 0;
+  swFlags = [];
+  swRenderDisplay();
+  swRenderFlags();
+  swPersist();
+  swUpdateButtons();
+});
+
+// =====================================================================
+// ROUTINE / INTERVAL TIMER (for exercise, work, or any activity)
+// =====================================================================
+let routineCalId = null;
+let routineActId = null;
+let routineSegments = [];   // working copy: [{id, name, durationSec}]
+let routineLoop = false;
+
+function currentRoutineActivity(){
+  const cal = appState.calendars[routineCalId];
+  return cal ? cal.activities.find(a => a.id === routineActId) : null;
+}
+
+function openRoutine(calId, actId){
+  rtStop(true);
+  routineCalId = calId;
+  routineActId = actId;
+  const act = currentRoutineActivity();
+  const saved = act && act.routine ? act.routine : null;
+  routineSegments = saved ? JSON.parse(JSON.stringify(saved.segments)) : [];
+  routineLoop = saved ? !!saved.loop : false;
+
+  document.getElementById('rtTitle').textContent = act ? `${act.icon} ${act.label} — Bloques de tiempo` : 'Rutina';
+  document.getElementById('loopCheck').checked = routineLoop;
+  renderTemplateButtons(act);
+  renderSegEditList();
+  rtResetPlayerState();
+  showView('routine');
+}
+document.getElementById('rtBackLink').addEventListener('click', () => { rtStop(true); showView('cal'); });
+
+function renderTemplateButtons(act){
+  const host = document.getElementById('rtTemplateRow');
+  host.innerHTML = '';
+  const label = (act ? act.label : '').toLowerCase();
+  const templates = [];
+  templates.push({
+    name: '🏃 Plantilla de ejercicio',
+    segs: [
+      { name:'Calentamiento', durationSec: 300 },
+      { name:'Esfuerzo alto', durationSec: 45 },
+      { name:'Descanso', durationSec: 30 },
+      { name:'Enfriamiento', durationSec: 180 },
+    ], loop:false
+  });
+  templates.push({
+    name: '💼 Plantilla de trabajo',
+    segs: [
+      { name:'Enfoque profundo', durationSec: 50*60 },
+      { name:'Descanso corto', durationSec: 10*60 },
+    ], loop:true
+  });
+  templates.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'btn';
+    btn.textContent = t.name;
+    btn.addEventListener('click', () => {
+      if(routineSegments.length && !confirm('Esto reemplaza los bloques actuales. ¿Continuar?')) return;
+      routineSegments = t.segs.map(s => ({ id: uid('seg'), name:s.name, durationSec:s.durationSec }));
+      routineLoop = t.loop;
+      document.getElementById('loopCheck').checked = routineLoop;
+      renderSegEditList();
+    });
+    host.appendChild(btn);
+  });
+}
+
+function renderSegEditList(){
+  const host = document.getElementById('segEditList');
+  host.innerHTML = '';
+  routineSegments.forEach((s, i) => {
+    const min = Math.floor(s.durationSec / 60);
+    const sec = s.durationSec % 60;
+    const row = document.createElement('div');
+    row.className = 'seg-row';
+    row.innerHTML = `
+      <input type="text" class="seg-name" placeholder="Nombre del bloque" value="${s.name}">
+      <input type="text" class="seg-min" inputmode="numeric" value="${min}"><span class="seg-colon">min</span>
+      <input type="text" class="seg-sec" inputmode="numeric" value="${sec}"><span class="seg-colon">seg</span>
+      <button class="mini-btn" data-act="up" title="Subir">↑</button>
+      <button class="mini-btn" data-act="down" title="Bajar">↓</button>
+      <button class="mini-btn danger" data-act="del" title="Eliminar">🗑️</button>
+    `;
+    const [nameIn, minIn, secIn] = row.querySelectorAll('input');
+    nameIn.addEventListener('input', () => s.name = nameIn.value);
+    const syncDuration = () => {
+      const m = Math.max(0, parseInt(minIn.value,10) || 0);
+      const sc = Math.max(0, Math.min(59, parseInt(secIn.value,10) || 0));
+      s.durationSec = m*60 + sc;
+      renderRoutineTotal();
+    };
+    minIn.addEventListener('input', syncDuration);
+    secIn.addEventListener('input', syncDuration);
+    row.querySelector('[data-act="up"]').addEventListener('click', () => {
+      if(i===0) return;
+      [routineSegments[i-1], routineSegments[i]] = [routineSegments[i], routineSegments[i-1]];
+      renderSegEditList();
+    });
+    row.querySelector('[data-act="down"]').addEventListener('click', () => {
+      if(i===routineSegments.length-1) return;
+      [routineSegments[i+1], routineSegments[i]] = [routineSegments[i], routineSegments[i+1]];
+      renderSegEditList();
+    });
+    row.querySelector('[data-act="del"]').addEventListener('click', () => {
+      routineSegments.splice(i,1);
+      renderSegEditList();
+    });
+    host.appendChild(row);
+  });
+  renderRoutineTotal();
+  if(rtIndex >= routineSegments.length) rtIndex = 0;
+  renderRtPlayer();
+}
+function renderRoutineTotal(){
+  const total = routineSegments.reduce((s,a) => s+a.durationSec, 0);
+  document.getElementById('routineTotal').textContent =
+    routineSegments.length ? `Duración total por vuelta: ${swFormat(total*1000).main}` : 'Sin bloques todavía.';
+}
+document.getElementById('addSegBtn').addEventListener('click', () => {
+  routineSegments.push({ id: uid('seg'), name:'Nuevo bloque', durationSec: 60 });
+  renderSegEditList();
+});
+document.getElementById('loopCheck').addEventListener('change', (e) => { routineLoop = e.target.checked; });
+
+document.getElementById('saveRoutineBtn').addEventListener('click', () => {
+  const act = currentRoutineActivity();
+  if(!act) return;
+  if(routineSegments.some(s => !s.name.trim() || s.durationSec <= 0)){
+    alert('Cada bloque necesita un nombre y una duración mayor a 0.');
+    return;
+  }
+  act.routine = { segments: JSON.parse(JSON.stringify(routineSegments)), loop: routineLoop };
+  saveAppState();
+  const btn = document.getElementById('saveRoutineBtn');
+  const original = btn.textContent;
+  btn.textContent = '✓ Guardado';
+  setTimeout(() => btn.textContent = original, 1200);
+});
+
+// ---------- Interval player ----------
+let rtRunning = false;
+let rtIndex = 0;
+let rtSegStartTs = 0;
+let rtSegElapsed = 0; // ms already elapsed in current segment (while paused)
+let rtFlags = [];
+let rtRafHandle = null;
+
+function rtResetPlayerState(){
+  rtRunning = false;
+  rtIndex = 0;
+  rtSegElapsed = 0;
+  rtFlags = [];
+  cancelAnimationFrame(rtRafHandle);
+  renderRtPlayer();
+  renderRtFlags();
+}
+function rtCurrentSeg(){ return routineSegments[rtIndex] || null; }
+function rtSegMs(){ const s = rtCurrentSeg(); return s ? s.durationSec*1000 : 0; }
+function rtElapsedMs(){ return rtRunning ? rtSegElapsed + (Date.now()-rtSegStartTs) : rtSegElapsed; }
+
+function beep(freq, duration, delay){
+  setTimeout(() => {
+    try{
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.value = freq;
+      osc.type = 'sine';
+      osc.connect(gain); gain.connect(ctx.destination);
+      gain.gain.setValueAtTime(0.001, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime+0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+duration/1000);
+      osc.start();
+      osc.stop(ctx.currentTime + duration/1000 + 0.02);
+      osc.onended = () => ctx.close();
+    }catch(e){ /* audio no disponible */ }
+  }, delay||0);
+}
+function alertTransition(){
+  beep(660,140,0); beep(880,160,180);
+  if(navigator.vibrate) navigator.vibrate([180,80,180]);
+  flashPlayer();
+}
+function alertFinish(){
+  beep(523,150,0); beep(659,150,170); beep(784,220,340);
+  if(navigator.vibrate) navigator.vibrate([200,100,200,100,200]);
+  flashPlayer();
+}
+function flashPlayer(){
+  const el = document.querySelector('.rt-player');
+  el.classList.add('flash');
+  setTimeout(() => el.classList.remove('flash'), 400);
+}
+
+function renderRtPlayer(){
+  const seg = rtCurrentSeg();
+  const nameEl = document.getElementById('rtSegName');
+  const timeEl = document.getElementById('rtTime');
+  const fillEl = document.getElementById('rtProgressFill');
+  const nextEl = document.getElementById('rtNext');
+  const startBtn = document.getElementById('rtStartBtn');
+  const skipBtn = document.getElementById('rtSkipBtn');
+  const flagBtn = document.getElementById('rtFlagBtn');
+
+  if(!seg){
+    nameEl.textContent = 'Sin bloques';
+    timeEl.textContent = '00:00';
+    fillEl.style.width = '0%';
+    nextEl.textContent = 'Añade al menos un bloque de tiempo arriba.';
+    startBtn.disabled = true; skipBtn.disabled = true; flagBtn.disabled = true;
+    return;
+  }
+  startBtn.disabled = false;
+  const remainMs = Math.max(0, rtSegMs() - rtElapsedMs());
+  nameEl.textContent = seg.name;
+  timeEl.textContent = swFormat(remainMs).main;
+  fillEl.style.width = (rtElapsedMs()/rtSegMs()*100).toFixed(1) + '%';
+
+  const isLast = rtIndex === routineSegments.length - 1;
+  if(!isLast){
+    nextEl.textContent = `Siguiente: ${routineSegments[rtIndex+1].name} · ${swFormat(routineSegments[rtIndex+1].durationSec*1000).main}`;
+  }else if(routineLoop){
+    nextEl.textContent = `Se repite desde: ${routineSegments[0].name}`;
+  }else{
+    nextEl.textContent = 'Último bloque de esta vuelta';
+  }
+  skipBtn.disabled = !rtRunning;
+  flagBtn.disabled = !rtRunning;
+  startBtn.textContent = rtRunning ? '⏸ Pausar' : (rtElapsedMs() > 0 || rtIndex > 0 ? '▶ Reanudar' : '▶ Iniciar');
+  startBtn.classList.toggle('start', !rtRunning);
+}
+
+function rtTick(){
+  if(rtElapsedMs() >= rtSegMs()){
+    rtAdvance(false);
+  }else{
+    renderRtPlayer();
+    rtRafHandle = requestAnimationFrame(rtTick);
+  }
+}
+function rtAdvance(manual){
+  const wasLast = rtIndex === routineSegments.length - 1;
+  if(!manual){
+    if(wasLast && !routineLoop){ alertFinish(); } else { alertTransition(); }
+  }
+  rtSegElapsed = 0;
+  if(!wasLast){
+    rtIndex++;
+    rtSegStartTs = Date.now();
+  }else if(routineLoop){
+    rtIndex = 0;
+    rtSegStartTs = Date.now();
+  }else{
+    rtRunning = false;
+    cancelAnimationFrame(rtRafHandle);
+    renderRtPlayer();
+    return;
+  }
+  if(rtRunning){ rtRafHandle = requestAnimationFrame(rtTick); }
+  renderRtPlayer();
+}
+
+document.getElementById('rtStartBtn').addEventListener('click', () => {
+  if(!routineSegments.length) return;
+  if(rtRunning){
+    rtSegElapsed = rtElapsedMs();
+    rtRunning = false;
+    cancelAnimationFrame(rtRafHandle);
+  }else{
+    rtSegStartTs = Date.now();
+    rtRunning = true;
+    rtRafHandle = requestAnimationFrame(rtTick);
+  }
+  renderRtPlayer();
+});
+document.getElementById('rtSkipBtn').addEventListener('click', () => { if(rtRunning) rtAdvance(true); });
+document.getElementById('rtResetBtn').addEventListener('click', () => {
+  if(rtRunning && !confirm('¿Reiniciar la sesión actual?')) return;
+  rtResetPlayerState();
+});
+document.getElementById('rtFlagBtn').addEventListener('click', () => {
+  const seg = rtCurrentSeg();
+  if(!seg) return;
+  rtFlags.push({ segName: seg.name, atMs: rtElapsedMs(), ts: Date.now() });
+  renderRtFlags();
+});
+function renderRtFlags(){
+  const host = document.getElementById('rtFlagListHost');
+  if(!rtFlags.length){
+    host.innerHTML = '<div class="empty-flags">Sin marcas todavía.</div>';
+    return;
+  }
+  const rows = rtFlags.map((f,i) => `
+    <div class="flag-item">
+      <span class="flag-num">🚩 ${i+1}</span>
+      <span class="flag-split">${f.segName}</span>
+      <span class="flag-total">${swFormat(f.atMs).main}</span>
+    </div>`).reverse().join('');
+  host.innerHTML = `<div class="flag-list">${rows}</div>`;
+}
+function rtStop(silent){
+  rtRunning = false;
+  cancelAnimationFrame(rtRafHandle);
+}
+
+// =====================================================================
+// INIT
+// =====================================================================
 (async function init(){
-  await loadState();
-  renderAll();
+  await loadAppState();
+  renderCalendarView();
   const note = document.getElementById('storageNote');
   if(note){
     note.textContent = hasClaudeStorage()
@@ -726,10 +1582,12 @@ document.getElementById('importInput').addEventListener('change', (e) => {
       : 'Tu progreso se guarda automáticamente en este dispositivo.';
   }
   await tryReconnectFile();
+  await swLoad();
+  swUpdateButtons();
 
   if('serviceWorker' in navigator){
     try{ await navigator.serviceWorker.register('service-worker.js'); }
-    catch(e){ /* sin soporte o sin https: se ignora, la app sigue funcionando */ }
+    catch(e){ /* sin soporte o sin https */ }
   }
 })();
 </script>
