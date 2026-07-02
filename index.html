@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calendario de actividades — Julio 2026</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2F6F62">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Calendario">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F6F2EA;
+    --paper-dim: #EDE7DA;
+    --ink: #2B2A26;
+    --ink-soft: #6B665A;
+    --teal: #2F6F62;
+    --teal-dark: #1F4E44;
+    --clay: #C9702E;
+    --line: #D9D0BC;
+    --check-bg: #E4EFE9;
+    --card: #FFFFFF;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    padding:28px 18px 60px;
+  }
+  .wrap{ max-width:880px; margin:0 auto; }
+
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:20px;
+    flex-wrap:wrap;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:18px;
+    margin-bottom:22px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--teal-dark);
+    margin:0 0 6px;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(26px, 4vw, 38px);
+    margin:0;
+    line-height:1.05;
+  }
+  .totals{
+    text-align:right;
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .totals .big{
+    font-family:'Fraunces', serif;
+    font-size:34px;
+    font-weight:700;
+    color:var(--teal-dark);
+    line-height:1;
+  }
+  .totals .label{
+    font-size:11px;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+  }
+
+  .overall-bar{
+    height:8px;
+    background:var(--paper-dim);
+    border:1px solid var(--line);
+    border-radius:20px;
+    overflow:hidden;
+    margin-bottom:26px;
+  }
+  .overall-bar-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--teal), var(--clay));
+    width:0%;
+    transition:width .4s ease;
+  }
+
+  .controls{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+  }
+  .week-select-wrap{
+    position:relative;
+    display:flex;
+    align-items:center;
+    background:var(--card);
+    border:1.5px solid var(--ink);
+    border-radius:10px;
+    padding:0 14px;
+  }
+  .week-select-wrap::after{
+    content:"▾";
+    color:var(--teal-dark);
+    font-size:13px;
+    pointer-events:none;
+    margin-left:8px;
+  }
+  select#weekSelect{
+    appearance:none;
+    -webkit-appearance:none;
+    border:none;
+    background:transparent;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:14px;
+    font-weight:600;
+    color:var(--ink);
+    padding:12px 4px;
+    cursor:pointer;
+    outline:none;
+  }
+  .week-nav{
+    display:flex;
+    gap:6px;
+  }
+  .week-nav button{
+    width:34px; height:34px;
+    border:1.5px solid var(--ink);
+    background:var(--card);
+    border-radius:8px;
+    font-size:15px;
+    cursor:pointer;
+    color:var(--ink);
+    transition:background .15s;
+  }
+  .week-nav button:hover{ background:var(--paper-dim); }
+  .week-nav button:disabled{ opacity:.35; cursor:default; }
+
+  .week-progress{
+    margin-left:auto;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  .week-progress b{ color:var(--teal-dark); }
+
+  .card{
+    background:var(--card);
+    border:1.5px solid var(--ink);
+    border-radius:14px;
+    overflow:hidden;
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+  }
+  thead th{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:500;
+    font-size:11px;
+    text-align:center;
+    padding:10px 6px;
+    letter-spacing:0.02em;
+  }
+  thead th.act-head{
+    cursor:default;
+  }
+  thead th .act-icon{ font-size:16px; display:block; margin-bottom:2px; }
+  thead th.day-head{
+    text-align:left;
+    padding-left:16px;
+    width:150px;
+  }
+  tbody td{
+    border-top:1px solid var(--line);
+    padding:10px 6px;
+    text-align:center;
+  }
+  tbody tr:nth-child(even){ background:#FBF9F4; }
+  .day-cell{
+    text-align:left !important;
+    padding-left:16px !important;
+    cursor:pointer;
+  }
+  .day-name{
+    font-weight:600;
+    font-size:14px;
+  }
+  .day-date{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+  }
+  .day-cell:hover .day-name{ color:var(--teal-dark); text-decoration:underline; }
+
+  .chk{
+    width:26px; height:26px;
+    margin:0 auto;
+    border:1.6px solid var(--ink);
+    border-radius:6px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--card);
+    transition:background .15s, border-color .15s, transform .1s;
+    user-select:none;
+    font-size:15px;
+  }
+  .chk:hover{ transform:scale(1.06); }
+  .chk.checked{
+    background:var(--check-bg);
+    border-color:var(--teal);
+    color:var(--teal-dark);
+  }
+
+  .legend{
+    margin-top:16px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 18px;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  .legend span{ display:flex; align-items:center; gap:6px; }
+  .legend .dot{
+    width:12px; height:12px;
+    border-radius:3px;
+    border:1.4px solid var(--ink);
+    background:var(--check-bg);
+    border-color:var(--teal);
+  }
+
+  .filesync{
+    margin-top:18px;
+    padding:14px 16px;
+    background:var(--card);
+    border:1.5px solid var(--ink);
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+  }
+  .filesync .fs-title{
+    font-weight:600;
+    color:var(--ink);
+    margin-right:4px;
+    flex-basis:100%;
+    font-family:'Inter', sans-serif;
+    font-size:13px;
+  }
+  .filesync button{
+    border:1.4px solid var(--ink);
+    background:var(--paper);
+    border-radius:8px;
+    padding:8px 12px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    cursor:pointer;
+    color:var(--ink);
+    transition:background .15s;
+  }
+  .filesync button:hover{ background:var(--paper-dim); }
+  .filesync button.primary{
+    background:var(--teal-dark);
+    color:var(--paper);
+    border-color:var(--teal-dark);
+  }
+  .filesync button.primary:hover{ background:var(--teal); }
+  #fileStatus{
+    color:var(--ink-soft);
+  }
+  #fileStatus.connected{ color:var(--teal-dark); font-weight:600; }
+  #fileStatus.needs-permission{ color:var(--clay); font-weight:600; }
+
+  footer{
+    margin-top:22px;
+    font-size:12px;
+    color:var(--ink-soft);
+    text-align:center;
+    font-family:'IBM Plex Mono', monospace;
+  }
+
+  .loading{
+    text-align:center;
+    padding:40px;
+    color:var(--ink-soft);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+  }
+
+  @media (max-width:640px){
+    thead th.day-head{ width:100px; }
+    .act-icon{ font-size:14px; }
+    thead th{ font-size:9px; padding:8px 3px; }
+    .chk{ width:22px; height:22px; font-size:12px; }
+    .totals{ text-align:left; }
+    header{ align-items:flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <p class="eyebrow">Julio 2026 · Del 1 al 25</p>
+      <h1>Calendario de&nbsp;actividades</h1>
+    </div>
+    <div class="totals">
+      <div class="big" id="overallCount">0/150</div>
+      <div class="label">Completado en total</div>
+    </div>
+  </header>
+
+  <div class="overall-bar"><div class="overall-bar-fill" id="overallFill"></div></div>
+
+  <div class="controls">
+    <div class="week-nav">
+      <button id="prevWeek" title="Semana anterior">‹</button>
+      <button id="nextWeek" title="Semana siguiente">›</button>
+    </div>
+    <div class="week-select-wrap">
+      <select id="weekSelect"></select>
+    </div>
+    <div class="week-progress" id="weekProgress"></div>
+  </div>
+
+  <div class="card">
+    <div id="tableHost">
+      <div class="loading">Cargando tu progreso…</div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><i class="dot"></i> Actividad marcada</span>
+    <span>Haz clic en el nombre del día para marcar toda la jornada</span>
+  </div>
+
+  <div class="filesync">
+    <span class="fs-title">Guardar en un archivo de tu equipo</span>
+    <button id="connectFileBtn" class="primary">📁 Conectar archivo en mi carpeta</button>
+    <button id="exportBtn">⬇️ Exportar copia (.json)</button>
+    <button id="importBtn">⬆️ Importar copia (.json)</button>
+    <input type="file" id="importInput" accept="application/json" style="display:none">
+    <span id="fileStatus">Sin conectar — se está usando el guardado interno.</span>
+  </div>
+
+  <footer id="storageNote">Tu progreso se guarda automáticamente.</footer>
+</div>
+
+<script>
+const ACTIVITIES = [
+  { id:'ej1',  icon:'💪', label:'Ejercicio',   time:'6:00–8:00 a. m.' },
+  { id:'des',  icon:'🥣', label:'Desayuno',     time:'8:00–9:00 a. m.' },
+  { id:'trab', icon:'💼', label:'Trabajo',      time:'9:00 a. m.–5:00 p. m.' },
+  { id:'ej2',  icon:'💪', label:'Ejercicio',   time:'5:00–6:00 p. m.' },
+  { id:'jue',  icon:'🎮', label:'Juegos',       time:'6:00–10:00 p. m.' },
+  { id:'dor',  icon:'😴', label:'Dormir',       time:'10:00 p. m.–6:00 a. m.' },
+];
+
+const DIAS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+
+function buildDates(){
+  const dates = [];
+  for(let d = 1; d <= 25; d++){
+    dates.push(new Date(2026, 6, d));
+  }
+  return dates;
+}
+const ALL_DATES = buildDates();
+
+function mondayOf(date){
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = (day === 0 ? -6 : 1 - day);
+  d.setDate(d.getDate() + diff);
+  d.setHours(0,0,0,0);
+  return d;
+}
+function fmtKey(date){
+  return date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0') + '-' + String(date.getDate()).padStart(2,'0');
+}
+function fmtShort(date){
+  return date.getDate() + ' ' + MESES[date.getMonth()];
+}
+
+function buildWeeks(){
+  const map = new Map();
+  ALL_DATES.forEach(date => {
+    const key = fmtKey(mondayOf(date));
+    if(!map.has(key)) map.set(key, []);
+    map.get(key).push(date);
+  });
+  const weeks = Array.from(map.entries())
+    .sort((a,b) => a[0].localeCompare(b[0]))
+    .map(([key, dates], i) => ({
+      id: key,
+      index: i,
+      dates,
+      label: `Semana ${i+1} · ${fmtShort(dates[0])}–${fmtShort(dates[dates.length-1])}`
+    }));
+  return weeks;
+}
+const WEEKS = buildWeeks();
+
+let checks = {};
+let currentWeekIndex = 0;
+const STORAGE_KEY = 'daily-checklist-julio-2026';
+
+const hasClaudeStorage = () => (typeof window.storage !== 'undefined' && window.storage && typeof window.storage.get === 'function');
+
+async function loadState(){
+  // Preferred: Claude's built-in persistent storage (works when viewed inside Claude).
+  if(hasClaudeStorage()){
+    try{
+      const res = await window.storage.get(STORAGE_KEY, false);
+      if(res && res.value){ checks = JSON.parse(res.value); }
+      return;
+    }catch(e){ /* fall through to local fallback */ }
+  }
+  // Fallback: browser's own storage (works when the file is opened directly, outside Claude).
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) checks = JSON.parse(raw);
+  }catch(e){
+    checks = {};
+  }
+}
+async function saveState(){
+  let savedRemotely = false;
+  if(hasClaudeStorage()){
+    try{
+      await window.storage.set(STORAGE_KEY, JSON.stringify(checks), false);
+      savedRemotely = true;
+    }catch(e){ /* fall through to local fallback */ }
+  }
+  if(!savedRemotely){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(checks));
+    }catch(e){
+      console.error('No se pudo guardar el progreso', e);
+    }
+  }
+  if(fileHandle){ writeToFile(); }
+}
+
+function cellKey(date, actId){
+  return fmtKey(date) + '_' + actId;
+}
+
+function computeOverall(){
+  let done = 0;
+  ALL_DATES.forEach(date => {
+    ACTIVITIES.forEach(a => { if(checks[cellKey(date,a.id)]) done++; });
+  });
+  return { done, total: ALL_DATES.length * ACTIVITIES.length };
+}
+function computeWeek(week){
+  let done = 0;
+  week.dates.forEach(date => {
+    ACTIVITIES.forEach(a => { if(checks[cellKey(date,a.id)]) done++; });
+  });
+  return { done, total: week.dates.length * ACTIVITIES.length };
+}
+
+function renderHeaderStats(){
+  const o = computeOverall();
+  document.getElementById('overallCount').textContent = `${o.done}/${o.total}`;
+  document.getElementById('overallFill').style.width = (o.total ? (o.done/o.total*100) : 0) + '%';
+
+  const week = WEEKS[currentWeekIndex];
+  const w = computeWeek(week);
+  document.getElementById('weekProgress').innerHTML = `<b>${w.done}/${w.total}</b> esta semana`;
+}
+
+function renderWeekSelect(){
+  const sel = document.getElementById('weekSelect');
+  sel.innerHTML = '';
+  WEEKS.forEach(week => {
+    const opt = document.createElement('option');
+    opt.value = week.index;
+    opt.textContent = week.label;
+    sel.appendChild(opt);
+  });
+  sel.value = currentWeekIndex;
+}
+
+function renderTable(){
+  const week = WEEKS[currentWeekIndex];
+  const host = document.getElementById('tableHost');
+
+  let thead = '<thead><tr><th class="day-head">Día</th>' +
+    ACTIVITIES.map(a => `<th class="act-head"><span class="act-icon">${a.icon}</span>${a.label}<br><span style="opacity:.65;font-weight:400">${a.time}</span></th>`).join('') +
+    '</tr></thead>';
+
+  let rows = week.dates.map(date => {
+    const key = fmtKey(date);
+    const cells = ACTIVITIES.map(a => {
+      const on = !!checks[cellKey(date,a.id)];
+      return `<td><div class="chk ${on?'checked':''}" data-key="${cellKey(date,a.id)}">${on?'✓':''}</div></td>`;
+    }).join('');
+    return `<tr>
+      <td class="day-cell" data-daykey="${key}">
+        <div class="day-name">${DIAS[date.getDay()]}</div>
+        <div class="day-date">${fmtShort(date)} · 2026</div>
+      </td>
+      ${cells}
+    </tr>`;
+  }).join('');
+
+  host.innerHTML = `<table>${thead}<tbody>${rows}</tbody></table>`;
+
+  host.querySelectorAll('.chk').forEach(el => {
+    el.addEventListener('click', () => {
+      const k = el.dataset.key;
+      checks[k] = !checks[k];
+      el.classList.toggle('checked', checks[k]);
+      el.textContent = checks[k] ? '✓' : '';
+      renderHeaderStats();
+      saveState();
+    });
+  });
+
+  host.querySelectorAll('.day-cell').forEach(el => {
+    el.addEventListener('click', () => {
+      const dayKey = el.dataset.daykey;
+      const date = week.dates.find(d => fmtKey(d) === dayKey);
+      const allOn = ACTIVITIES.every(a => checks[cellKey(date,a.id)]);
+      ACTIVITIES.forEach(a => { checks[cellKey(date,a.id)] = !allOn; });
+      renderTable();
+      renderHeaderStats();
+      saveState();
+    });
+  });
+}
+
+function updateNavButtons(){
+  document.getElementById('prevWeek').disabled = currentWeekIndex === 0;
+  document.getElementById('nextWeek').disabled = currentWeekIndex === WEEKS.length - 1;
+}
+
+function renderAll(){
+  renderWeekSelect();
+  renderTable();
+  renderHeaderStats();
+  updateNavButtons();
+}
+
+document.getElementById('weekSelect').addEventListener('change', (e) => {
+  currentWeekIndex = parseInt(e.target.value, 10);
+  renderTable();
+  renderHeaderStats();
+  updateNavButtons();
+  document.getElementById('weekSelect').value = currentWeekIndex;
+});
+document.getElementById('prevWeek').addEventListener('click', () => {
+  if(currentWeekIndex > 0){ currentWeekIndex--; renderAll(); }
+});
+document.getElementById('nextWeek').addEventListener('click', () => {
+  if(currentWeekIndex < WEEKS.length - 1){ currentWeekIndex++; renderAll(); }
+});
+
+// ---------- Guardado directo en un archivo de la carpeta del usuario ----------
+let fileHandle = null;
+
+function idbOpen(){
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('calendario-fs-db', 1);
+    req.onupgradeneeded = () => req.result.createObjectStore('handles');
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function idbSet(key, val){
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('handles', 'readwrite');
+    tx.objectStore('handles').put(val, key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+async function idbGet(key){
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('handles', 'readonly');
+    const req = tx.objectStore('handles').get(key);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function verifyPermission(handle, withRequest){
+  const opts = { mode: 'readwrite' };
+  if((await handle.queryPermission(opts)) === 'granted') return true;
+  if(withRequest){
+    if((await handle.requestPermission(opts)) === 'granted') return true;
+  }
+  return false;
+}
+
+function setFileStatus(text, cls){
+  const el = document.getElementById('fileStatus');
+  el.textContent = text;
+  el.className = cls || '';
+}
+
+async function writeToFile(){
+  if(!fileHandle) return;
+  const ok = await verifyPermission(fileHandle, true);
+  if(!ok) return;
+  try{
+    const writable = await fileHandle.createWritable();
+    await writable.write(JSON.stringify(checks, null, 2));
+    await writable.close();
+  }catch(e){ console.error('No se pudo escribir el archivo', e); }
+}
+
+async function connectFile(){
+  if(!('showSaveFilePicker' in window)){
+    alert('Tu navegador no permite guardar directo en una carpeta (esta función solo existe en Chrome o Edge de escritorio). Usa "Exportar copia" e "Importar copia" como alternativa.');
+    return;
+  }
+  try{
+    fileHandle = await window.showSaveFilePicker({
+      suggestedName: 'progreso-calendario.json',
+      types: [{ description: 'Progreso del calendario', accept: { 'application/json': ['.json'] } }]
+    });
+    await idbSet('fileHandle', fileHandle);
+    await writeToFile();
+    setFileStatus(`Conectado a "${fileHandle.name}" — se guarda ahí en cada cambio.`, 'connected');
+  }catch(e){
+    // el usuario cerró el selector sin elegir archivo
+  }
+}
+
+async function tryReconnectFile(){
+  try{
+    const handle = await idbGet('fileHandle');
+    if(!handle) return;
+    fileHandle = handle;
+    const granted = await verifyPermission(handle, false);
+    if(granted){
+      const file = await handle.getFile();
+      const text = await file.text();
+      if(text && text.trim()){
+        try{
+          checks = JSON.parse(text);
+          renderAll();
+        }catch(e){ /* archivo vacío o corrupto, se conserva lo que ya había */ }
+      }
+      setFileStatus(`Conectado a "${handle.name}" — se guarda ahí en cada cambio.`, 'connected');
+    }else{
+      setFileStatus(`Archivo "${handle.name}" conectado antes — haz clic para reactivar el permiso.`, 'needs-permission');
+    }
+  }catch(e){ /* sin archivo conectado todavía */ }
+}
+
+function exportProgress(){
+  const blob = new Blob([JSON.stringify(checks, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'progreso-calendario.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importProgress(file){
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      checks = JSON.parse(reader.result);
+      renderAll();
+      saveState();
+    }catch(e){
+      alert('No se pudo leer ese archivo. Asegúrate de elegir un .json exportado desde este calendario.');
+    }
+  };
+  reader.readAsText(file);
+}
+
+document.getElementById('connectFileBtn').addEventListener('click', () => {
+  if(fileHandle){ connectFile(); } else { connectFile(); }
+});
+if(!('showSaveFilePicker' in window)){
+  document.getElementById('connectFileBtn').style.display = 'none';
+}
+document.getElementById('exportBtn').addEventListener('click', exportProgress);
+document.getElementById('importBtn').addEventListener('click', () => {
+  document.getElementById('importInput').click();
+});
+document.getElementById('importInput').addEventListener('change', (e) => {
+  if(e.target.files && e.target.files[0]) importProgress(e.target.files[0]);
+  e.target.value = '';
+});
+// ---------------------------------------------------------------------------
+
+(async function init(){
+  await loadState();
+  renderAll();
+  const note = document.getElementById('storageNote');
+  if(note){
+    note.textContent = hasClaudeStorage()
+      ? 'Tu progreso se guarda automáticamente en Claude.'
+      : 'Tu progreso se guarda automáticamente en este dispositivo.';
+  }
+  await tryReconnectFile();
+
+  if('serviceWorker' in navigator){
+    try{ await navigator.serviceWorker.register('service-worker.js'); }
+    catch(e){ /* sin soporte o sin https: se ignora, la app sigue funcionando */ }
+  }
+})();
+</script>
+</body>
+</html>
